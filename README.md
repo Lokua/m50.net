@@ -1,89 +1,91 @@
-# TODO
+# m50.net Playlist Page Generator
 
-1. Replace old `head` with new `head` element, taking care to retain proper
-   title (matches the file name)
-2. Replace entire `table` element in the old page with `#navbar-container`
-   element from new page.
+This project uses the [handlebars](https://handlebarsjs.com/) templating system
+to compile playlist files written in [markdown](https://www.markdownguide.org/)
+into static HTML pages.
 
-- Rename `div` of #navbar-container to `header` for semantic clarity
-- Stash prev + next links for the next step...
+# Installation/Requirements
 
-3. Append prev+next links section after `header` (perhaps using an `aside`
-   element for semantic clarity)
-4. Everything after the unnamed prev+next section in the new page is not wrapped
-   in a single element and has custom styles for various content while the old
-   page example has everything in a single `p` element (which is unsemantic, but
-   makes it easy to identify what should be replaced).
+This project uses [Node.js](https://nodejs.org/en) and was written using Node.js
+version 22. It will not work on older version of Node that don't support
+`type: module`. Note that node is only required to run the build script, it is
+not needed for any of the resulting HTML pages to work.
 
-So I'm not 100% sure what you would like for step #4, but I'm guessing we can
-just leave the contents of `<p class="playlist">` as is, though I suggest
-renaming the element to `<main class="playlist">` so in the end you have more
-structured document:
+Assuming Node/NPM (NPM comes bundled with Node) has been installed and is
+available on your path:
 
-```html
-<head>
-  <body>
-    <header>...</header>
-    <!-- or could be <section> -->
-    <aside>...</aside>
-    <main>...</main>
-  </body>
-</head>
+1. Download or clone this project
+2. Open a command prompt and navigate to the root of this project
+3. Run `npm install` - this will install the dependencies needed to parse
+   markdown, populate templates, and make the resulting output look pretty
+
+That's it for installation.
+
+# How This Works
+
+Project layout:
+
+```
+# This folder contains playlist files written in markdown
+./playlists
+
+# This folder contains the final, compiled HTML pages
+# that you can copy to your server/host
+./playlists-html
+
+# Contains the playlist template file written in the handlebars
+# templating language (a superset of HTML)
+./templates
+
+# This is the actual build script that pass the playlist files
+# though the template and write the results to the playlists-html directory
+./build.mjs
 ```
 
-5. Append script to enable keyboard navigation of prev+next buttons
+To compile the playlists:
 
-Visual representation of the above notes:
+1. Navigate to the root of this project via command prompt
+2. Run `npm run build`; the status of each file's compilation will be logged
+3. Copy the files in [playlists-html](/playlists-html) over to your host/server
 
-```html
-<!-- OLD -->
-<!-- Replace with new head  -->
-<head>
-  <!-- Retain this, and prepend `m50 | `  -->
-  <title>2023.12.29 etc</title>
-</head>
+## Playlist Format
 
-<!-- Copy bgcolor below into style declaration -->
-<body bgcolor=".." various-link-colors="...">
-  <!-- 1. Replace entire table with <div id="navbar-container"> "template"  -->
-  <!-- Note: "div" should be replaced with proper `<header />` tag -->
-  <!-- 2. Ensure we retain the links for previous + next playlists -->
-  <table>
-    ...
-  </table>
+A "playlist file" is a simple markdown document. In this case it is also
+enhanced to support markdown metadata:
 
-  <!-- Retain contents, rename element to <main class="playlist">  -->
-  <p class="playlist">...</p>
-
-  <!-- Append script to enable keyboard navigation of prev/next buttons -->
-</body>
+```md
+---
+date: 2025.02.24
+backgroundColor: '#ff0000'
+---
 ```
 
-```html
-<aside>
-  <div class="container mt-4 mb-4">
-    <div class="d-flex justify-content-between">
-      <div>
-        <a
-          class="btn btn-outline-primary"
-          href="{{prevPlaylistLink}}"
-          target="_self"
-        >
-          Previous Playlist
-        </a>
-      </div>
-      <div>
-        <a
-          class="btn btn-outline-primary"
-          href="{{nextPlaylistLink}}"
-          target="_self"
-        >
-          Next Playlist
-        </a>
-      </div>
-    </div>
-  </div>
-</aside>
-<main>{{playlist}}</main>
-```
-# m50.net
+Metadata must be contained at the top of the file between two `---`. The date
+will be used to complete the page's title, e.g. `m50 | 2025.02.24`. If not
+provided the build script will dervive the title from the playlist file's name.
+The `backgroundColor` will be added to the document body's inline style
+attribute. This _should_ support any valid html color declaration like
+`#ff0000`, `red` or `rgba(255, 0 0)` however when using hex you _must_ wrap the
+value in quotation marks like in the example above. This is because the `#`
+character is used to preceed comments in the metadata syntax. Quotes are _not_
+needed for regular names or rgba declarations. This is the only metadata
+supported at this time.
+
+## Playlist Extraction
+
+Playlist extraction and playlist building have been separated in order to
+prevent accidentally overwriting manual changes you might want to make to
+playlists. The rules are:
+
+- `playlists` represent the "source of truth" for what will populate a playlist
+  page. This can be manually edited if needed and is where you should place new
+  playlists going forward.
+- `playlists-html` should _not_ be edited. This is the final HMTL page and any
+  edits you make to these will be lost the next time you run the build.
+- `playlists-old` place all old HTML pages here.
+- `playlists-extracted` this is where we'll temporarily store playlists that
+  have been extracted from the old pages and converted into markdown format. If
+  they look good, they can be transferred to the regular `playlists` folder for
+  permanent keeping.
+
+To run the extraction process enter `npm run extract`

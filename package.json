@@ -1,0 +1,23 @@
+{
+  "name": "m50.net",
+  "version": "1.0.0",
+  "description": "Templating system for playlist pages on m50.net",
+  "main": "build.mjs",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "extract": "node extract.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "1.0.0",
+    "gray-matter": "4.0.3",
+    "handlebars": "4.7.8",
+    "marked": "15.0.7",
+    "mustache": "4.2.0",
+    "prettier": "3.5.0",
+    "turndown": "7.2.0"
+  }
+}
