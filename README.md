@@ -2,11 +2,11 @@
 
 This project uses the [handlebars](https://handlebarsjs.com/) templating system
 to compile playlist files written in [markdown](https://www.markdownguide.org/)
-into static HTML pages.
+into static HTML pages for the homie [m50](https://m50.net).
 
 # Installation/Requirements
 
-This project uses [Node.js](https://nodejs.org/en) and was written using Node.js
+This project uses [Node.js](https://nodejs.org/en) and was written using
 version 22. It will not work on older version of Node that don't support
 `type: module`. Note that node is only required to run the build script, it is
 not needed for any of the resulting HTML pages to work.
@@ -30,14 +30,17 @@ Project layout:
 ./playlists
 
 # This folder contains the final, compiled HTML pages
-# that you can copy to your server/host
+# that you can copy to your server/host.
+# You should not make any edits to these files as they'll get
+# blown away the next time you run the build
 ./playlists-html
 
 # Contains the playlist template file written in the handlebars
-# templating language (a superset of HTML)
+# templating language (a superset of HTML). This is where you
+# can add anything meant for all pages
 ./templates
 
-# This is the actual build script that pass the playlist files
+# This is the actual build script that passes the playlist files
 # though the template and write the results to the playlists-html directory
 ./build.mjs
 ```
