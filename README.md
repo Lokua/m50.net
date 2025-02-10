@@ -92,3 +92,6 @@ playlists. The rules are:
   permanent keeping.
 
 To run the extraction process enter `npm run extract`
+
+> Note: the extraction script is only meant for to migrate to this new system.
+> Once all files have been migrated we can do away with this script entirely.
