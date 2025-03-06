@@ -17,6 +17,8 @@ const playlists = fs
 const template = fs.readFileSync(`${TEMPLATES_DIR}/playlist.hbs`, 'utf-8')
 const templateFn = Handlebars.compile(template)
 
+const failures = []
+
 for (const [index, filename] of playlists.entries()) {
   try {
     const date = path.basename(filename, '.md')
@@ -54,8 +56,17 @@ for (const [index, filename] of playlists.entries()) {
     fs.writeFileSync(dest, html, 'utf-8')
     console.info('Successfully compiled', filename, 'into', dest)
   } catch (error) {
+    failures.push(filename)
     console.error(`Unable to write ${filename}. Error:`, error)
   }
+}
+
+if (failures.length) {
+  fs.writeFileSync(
+    './build-failures.json',
+    JSON.stringify({ failures }, null, 2),
+    'utf-8'
+  )
 }
 
 function saveGetLink(playlist) {
