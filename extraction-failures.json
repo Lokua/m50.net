@@ -1,5 +1,6 @@
 {
   "failures": [
+    ".DS_Store",
     "2000.10.07.html",
     "2001.12.07.unlinked.html",
     "2002.04.01.fools.html",

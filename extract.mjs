@@ -64,12 +64,33 @@ function run() {
         continue
       }
 
-      let $content = cheerio.load(combinedHtml)
+      const $content = cheerio.load(combinedHtml)
+
+      // Find and remove any links that appear to be navigation links
       $content('a').each(function () {
-        const linkText = $content(this).text().trim()
-        // Check if the link only contains < or > characters (with possible whitespace)
-        if (/^[<>\s]+$/.test(linkText)) {
-          $content(this).remove()
+        const $link = $content(this)
+        const href = $link.attr('href')
+        const linkText = $link.text().trim()
+        const linkHtml = $link.html()
+
+        // Is this a navigation link?
+        // 1. Check if it links to an HTML file (likely another playlist)
+        // 2. Check if its text contains only angle brackets or entities
+        const isNavigationLink =
+          // Check if it links to another HTML file
+          href &&
+          href.match(/\.html$/) &&
+          // Raw angle brackets in text
+          (/^[<>\s]+$/.test(linkText) ||
+            // Text contains HTML entities for brackets
+            /(&gt;|&lt;)/.test(linkText) ||
+            // HTML content has entities directly
+            (linkHtml &&
+              (/(&gt;|&lt;)/.test(linkHtml) || /^[<>\s]+$/.test(linkHtml))))
+
+        if (isNavigationLink) {
+          // Remove the navigation link
+          $link.remove()
         }
       })
 
