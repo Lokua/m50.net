@@ -23,7 +23,15 @@ That's it for installation.
 
 # How This Works
 
-Project layout:
+## Quick Version
+
+1. Place playlists written in markdown into the `./playlists` folder
+2. From the project root in your command line, run `npm run build`
+3. Copy the resulting html files from `./playlists-html` to your server
+
+That's it!
+
+## Long Version:
 
 ```
 # This folder contains playlist files written in markdown
@@ -41,14 +49,16 @@ Project layout:
 ./templates
 
 # This is the actual build script that passes the playlist files
-# though the template and write the results to the playlists-html directory
+# though the template and writes the results to the playlists-html directory
 ./build.mjs
 ```
 
 To compile the playlists:
 
 1. Navigate to the root of this project via command prompt
-2. Run `npm run build`; the status of each file's compilation will be logged
+2. Run `npm run build`; the status of each file's compilation will be logged and
+   a list of any failed compilations will be printed to
+   `extraction-failures.json`
 3. Copy the files in [playlists-html](/playlists-html) over to your host/server
 
 ## Playlist Format
@@ -78,10 +88,12 @@ supported at this time.
 
 Playlist extraction and playlist building have been separated in order to
 prevent accidentally overwriting manual changes you might want to make to
-playlists. The rules are:
+playlists. This should be a one-time/temporary thing until all playlists are on
+the new format. Once that's the case, the extraction script and other parts only
+concerned with extraction can safely be deleted from the project. The rules are:
 
 - `playlists` represent the "source of truth" for what will populate a playlist
-  page. This can be manually edited if needed and is where you should place new
+  page. These can be manually edited if needed and is where you should place new
   playlists going forward.
 - `playlists-html` should _not_ be edited. This is the final HMTL page and any
   edits you make to these will be lost the next time you run the build.
@@ -92,6 +104,3 @@ playlists. The rules are:
   permanent keeping.
 
 To run the extraction process enter `npm run extract`
-
-> Note: the extraction script is only meant for to migrate to this new system.
-> Once all files have been migrated we can do away with this script entirely.
